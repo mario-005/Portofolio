@@ -1,0 +1,155 @@
+/* About Page Styles */
+.about-content {
+    padding: 100px 80px;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-text h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #00d4ff;
+}
+
+.about-text p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.about-photo img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    filter: brightness(1.1) contrast(1.1) saturate(1.2);
+}
+
+.skills-section {
+    padding: 100px 80px;
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.skills-section h2 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+.skill-category h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #00d4ff;
+}
+
+.skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-tag {
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.experience-section {
+    padding: 100px 80px;
+}
+
+.experience-section h2 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.timeline {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+    padding: 30px;
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.timeline-year {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00d4ff;
+    min-width: 120px;
+}
+
+.timeline-content h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.timeline-content p {
+    color: #aaa;
+    line-height: 1.6;
+}
+
+.contact-cta {
+    padding: 100px 80px;
+    text-align: center;
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.contact-cta h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.contact-cta p {
+    font-size: 18px;
+    color: #aaa;
+    margin-bottom: 30px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .about-content, .skills-section, .experience-section, .contact-cta {
+        padding: 60px 20px;
+    }
+
+    .about-grid, .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .timeline-item {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .timeline-year {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-content, .skills-section, .experience-section, .contact-cta {
+        padding: 40px 20px;
+    }
+}
