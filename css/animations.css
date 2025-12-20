@@ -1,0 +1,39 @@
+/* Scroll Animations */
+.fade-content {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-content.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section animations */
+section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+section.reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Show content by default if JavaScript is disabled */
+.no-js .fade-content,
+.no-js section {
+  opacity: 1;
+  transform: none;
+}
+
+/* Header transition */
+.site-header {
+  transition: background-color 0.3s ease;
+}
+
+.site-header.scrolled {
+  background-color: rgba(11, 11, 11, 0.95);
+}
