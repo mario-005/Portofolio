@@ -901,10 +901,43 @@ h2{color:#fff;margin-bottom:.75rem}
   padding-right: 1.5rem;
 }
 
+#modalBody .modal-lang {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0 0 1rem;
+}
+
+#modalBody .modal-lang-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+#modalBody .modal-lang button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+}
+
 #modalBody h3 {
   color: #fff;
   margin-top: 0;
   margin-bottom: 1rem;
+}
+
+#modalBody h4 {
+  margin: 0 0 0.5rem;
+  color: #fff;
+}
+
+#modalBody ul {
+  margin: 0 0 1rem;
+  padding-left: 1.1rem;
+}
+
+#modalBody li {
+  margin: 0.35rem 0;
 }
 
 #modalBody p {

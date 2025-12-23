@@ -143,27 +143,115 @@ document.addEventListener('DOMContentLoaded',()=>{
   const modal = document.getElementById('modal');
   const modalBody = document.getElementById('modalBody');
   const modalClose = document.getElementById('modalClose');
+
+  const defaultModalLang = (navigator.language || '').toLowerCase().startsWith('id') ? 'id' : 'en';
+  let currentModalId = null;
+  let currentModalLang = defaultModalLang;
+
+  function renderLangToggle(activeLang){
+    const isId = activeLang === 'id';
+    return `
+      <div class="modal-lang" role="group" aria-label="Translation">
+        <span class="modal-lang-label">Translation:</span>
+        <button type="button" class="btn small outline" data-modal-lang="en" aria-pressed="${!isId}">EN</button>
+        <button type="button" class="btn small outline" data-modal-lang="id" aria-pressed="${isId}">ID</button>
+      </div>
+    `;
+  }
+
+  function getModalContent(id, lang){
+    const isId = lang === 'id';
+    if(id==='modal1') return `
+      <h3>Telkom Foodies</h3>
+      ${renderLangToggle(lang)}
+      <p>${isId
+        ? 'Proyek akhir kelompok (Tubes) — aplikasi web pemesanan/manajemen makanan yang dibuat sebagai bagian dari tugas perkuliahan.'
+        : 'Group final project (Tubes) — a food ordering/management web app created as part of coursework.'}
+      </p>
+      <h4>${isId ? 'Highlight' : 'Highlights'}</h4>
+      <ul>
+        <li>${isId ? 'Demo live tersedia (halaman login).' : 'Live demo available (login page).'}</li>
+        <li>${isId ? 'Source code lengkap tersedia di repository.' : 'Full source code available in the repository.'}</li>
+        <li>${isId ? 'Dibangun menggunakan stack Laravel (PHP).' : 'Built on a Laravel (PHP) stack.'}</li>
+      </ul>
+      <p>
+        <a href="https://telkom-foodies.vercel.app/login" target="_blank" rel="noopener">${isId ? 'Buka Website' : 'Open Website'}</a>
+        &nbsp;•&nbsp;
+        <a href="https://github.com/mario-005/Tubes-Wad-Susah_kelompok-5" target="_blank" rel="noopener">${isId ? 'Buka Repository' : 'Open Repository'}</a>
+      </p>
+    `;
+
+    if(id==='modal2') return `
+      <h3>Galaxy Medical Center — Website Design</h3>
+      ${renderLangToggle(lang)}
+      <p>${isId
+        ? 'Remake/redesign website responsif untuk perusahaan fisioterapi (Galaxy Medical Center), dibuat di Figma.'
+        : 'Responsive website remake/redesign for a physiotherapy company (Galaxy Medical Center), created in Figma.'}
+      </p>
+      <h4>${isId ? 'Yang dibuat' : 'What’s included'}</h4>
+      <ul>
+        <li>${isId ? 'Versi layout responsif (desktop/tablet/mobile) untuk UX yang konsisten di berbagai perangkat.' : 'Responsive layout versions (desktop/tablet/mobile) to ensure consistent UX across devices.'}</li>
+        <li>${isId ? 'Prototype interaktif dengan screen utama dan alur navigasi.' : 'Interactive prototype with key screens and navigation flow.'}</li>
+        <li>${isId ? 'Komponen reusable + konsistensi spacing/typography untuk handoff yang rapi.' : 'Reusable components and consistent spacing/typography for clean handoff.'}</li>
+      </ul>
+      <p><a href="https://www.figma.com/design/mydpWMtt44xrN4zucJpxrz/GMC?node-id=157-7802&t=JbLTGy8lhamjXs3n-1" target="_blank" rel="noopener">${isId ? 'Buka Desain Figma' : 'Open Figma Design'}</a></p>
+    `;
+
+    if(id==='modal3') return `
+      <h3>${isId ? 'Manajemen Rumah Sakit' : 'Hospital Management Dashboard'}</h3>
+      ${renderLangToggle(lang)}
+      <p>${isId
+        ? 'Dashboard manajemen rumah sakit yang dibuat dengan Python dan database MySQL.'
+        : 'Hospital management dashboard built with Python and a MySQL database.'}
+      </p>
+      <h4>${isId ? 'Highlight' : 'Highlights'}</h4>
+      <ul>
+        <li>${isId ? 'Struktur aplikasi Python (termasuk konfigurasi Streamlit).' : 'Python app structure (includes Streamlit configuration).'}</li>
+        <li>${isId ? 'Script database (SQL) disediakan untuk setup lokal.' : 'Database script (SQL) included for local setup.'}</li>
+        <li>${isId ? 'Kredensial demo user tersedia di README repository.' : 'Demo user credentials are provided in the repository README.'}</li>
+      </ul>
+      <p><a href="https://github.com/mario-005/python-rumah-sakit.git" target="_blank" rel="noopener">${isId ? 'Buka Repository' : 'Open Repository'}</a></p>
+    `;
+
+    if(id==='modal4') return `
+      <h3>Finance Tracker</h3>
+      ${renderLangToggle(lang)}
+      <p>${isId
+        ? 'Aplikasi web pencatat keuangan pribadi untuk memantau pemasukan, pengeluaran, dan budget.'
+        : 'Personal finance tracker web app to monitor income, expenses, and budgets.'}
+      </p>
+      <h4>${isId ? 'Yang tersedia' : 'What’s included'}</h4>
+      <ul>
+        <li>${isId ? 'Alur autentikasi: Login, Register, dan Forgot Password (tersedia di website live).' : 'Authentication flow: Login, Register, and Forgot Password (available on the live site).'}</li>
+        <li>${isId ? 'Membantu mencatat transaksi dan meninjau pengeluaran vs target budget.' : 'Designed to help users record transactions and review spending vs. budget goals.'}</li>
+        <li>${isId ? 'UI responsif bergaya aplikasi untuk penggunaan harian.' : 'Responsive, app-style UI focused on day-to-day usage.'}</li>
+      </ul>
+      <p><a href="https://finance-opal-theta.vercel.app/" target="_blank" rel="noopener">${isId ? 'Buka Website' : 'Open Website'}</a></p>
+    `;
+
+    return `${renderLangToggle(lang)}<p>${isId ? 'Detail belum tersedia.' : 'Details not available.'}</p>`;
+  }
+
+  function openModal(id){
+    currentModalId = id;
+    currentModalLang = defaultModalLang;
+    modalBody.innerHTML = getModalContent(id, currentModalLang);
+    modal.setAttribute('aria-hidden','false');
+  }
+
+  // language toggle inside modal
+  modalBody.addEventListener('click', (e)=>{
+    const btn = e.target.closest('[data-modal-lang]');
+    if(!btn || !currentModalId) return;
+    const nextLang = btn.dataset.modalLang;
+    if(nextLang !== 'en' && nextLang !== 'id') return;
+    currentModalLang = nextLang;
+    modalBody.innerHTML = getModalContent(currentModalId, currentModalLang);
+  });
   document.querySelectorAll('[data-open]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const id = btn.dataset.open;
-      let html = '';
-      if(id==='modal1') html = `
-        <h3>Telkom Foodies</h3>
-        <p>Group final project (Tubes) — a food ordering/management app created as part of coursework. The repository contains the source, instructions and screenshots.</p>
-        <p><a href="https://github.com/mario-005/Tubes-Wad-Susah_kelompok-5" target="_blank" rel="noopener">Open GitHub Repo</a></p>
-      `;
-      if(id==='modal2') html = `
-        <h3>Galaxy Medical Center — Website Design</h3>
-        <p>Design prototype and UI screens created in Figma. Review the full design in the Figma file linked below.</p>
-        <p><a href="https://www.figma.com/design/mydpWMtt44xrN4zucJpxrz/GMC?node-id=157-7802&t=JbLTGy8lhamjXs3n-1" target="_blank" rel="noopener">Open Figma Design</a></p>
-      `;
-      if(id==='modal3') html = `
-        <h3>Dashboard Rumah Sakit berbasis Komputer</h3>
-        <p>Hospital management dashboard implemented in Python. Repo includes implementation notes and usage instructions.</p>
-        <p><a href="https://github.com/mario-005/python-rumah-sakit.git" target="_blank" rel="noopener">Open GitHub Repo</a></p>
-      `;
-      modalBody.innerHTML = html;
-      modal.setAttribute('aria-hidden','false');
+      openModal(id);
     });
   });
   modalClose.addEventListener('click',()=>modal.setAttribute('aria-hidden','true'));

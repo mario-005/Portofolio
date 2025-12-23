@@ -14,11 +14,11 @@
   text-align: left;
   transition: transform 0.8s;
   transform-style: preserve-3d;
-  cursor: pointer;
+  cursor: default;
 }
 
 .flip-card:hover .flip-card-inner {
-  transform: rotateY(180deg);
+  transform: none;
 }
 
 .flip-card-front,
