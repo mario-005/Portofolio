@@ -6,6 +6,65 @@ document.addEventListener('DOMContentLoaded',()=>{
   if (yearEl) yearEl.textContent = currentYear;
   const yearDup = document.querySelector('.year-duplicate');
   if (yearDup) yearDup.textContent = currentYear;  // Header scroll behavior - simpler version that keeps header visible
+
+  // last updated (from meta tag)
+  const lastUpdatedMeta = document.querySelector('meta[name="last-updated"]');
+  const lastUpdatedLabelEl = document.getElementById('lastUpdatedLabel');
+  const lastUpdatedEl = document.getElementById('lastUpdated');
+  if (lastUpdatedMeta && lastUpdatedEl) {
+    const iso = String(lastUpdatedMeta.getAttribute('content') || '').trim();
+    const isId = (navigator.language || '').toLowerCase().startsWith('id');
+    if (lastUpdatedLabelEl) lastUpdatedLabelEl.textContent = isId ? 'Terakhir diperbarui:' : 'Last updated:';
+
+    const formatForLocale = (dateObj) => dateObj.toLocaleDateString(isId ? 'id-ID' : 'en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit'
+    });
+
+    const applyDate = (dateObj, datetimeValue) => {
+      lastUpdatedEl.setAttribute('datetime', datetimeValue);
+      lastUpdatedEl.textContent = formatForLocale(dateObj);
+    };
+
+    // Prefer server-provided Last-Modified when hosted (auto-updates on deploy).
+    // Falls back to the meta value for local/file usage or hosts that don't expose Last-Modified.
+    (async () => {
+      try {
+        if (typeof fetch !== 'function') return;
+        const url = window.location.href.split('#')[0];
+        const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+        const lastModified = res && res.headers ? res.headers.get('last-modified') : null;
+        if (lastModified) {
+          const parsed = new Date(lastModified);
+          if (!Number.isNaN(parsed.getTime())) {
+            applyDate(parsed, parsed.toISOString());
+            return;
+          }
+        }
+      } catch (_) {
+        // ignore and fall back
+      }
+
+      // Fallback: meta content
+      if (iso) {
+        let parsed = null;
+        const m = iso.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
+        if (m) {
+          // Parse as a local calendar date to avoid timezone shifting (e.g. showing the previous day)
+          parsed = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+        } else {
+          parsed = new Date(iso);
+        }
+        lastUpdatedEl.setAttribute('datetime', iso);
+        if (!Number.isNaN(parsed.getTime())) {
+          lastUpdatedEl.textContent = formatForLocale(parsed);
+        } else {
+          lastUpdatedEl.textContent = iso;
+        }
+      }
+    })();
+  }
   const header = document.querySelector('.site-header');
   
   window.addEventListener('scroll', () => {

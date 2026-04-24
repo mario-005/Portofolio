@@ -1,25 +1,25 @@
 /* Scroll Animations */
 .fade-content {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
 
 .fade-content.fade-in {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 /* Section animations */
 section {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
 
 section.reveal {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 /* Show content by default if JavaScript is disabled */
@@ -35,5 +35,5 @@ section.reveal {
 }
 
 .site-header.scrolled {
-  background-color: rgba(11, 11, 11, 0.95);
+  background-color: rgba(246, 246, 246, 0.98);
 }
