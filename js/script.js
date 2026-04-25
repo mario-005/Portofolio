@@ -288,6 +288,22 @@ document.addEventListener('DOMContentLoaded',()=>{
       <p><a href="https://finance-opal-theta.vercel.app/" target="_blank" rel="noopener">${isId ? 'Buka Website' : 'Open Website'}</a></p>
     `;
 
+    if(id==='modal5') return `
+      <h3>SplitKos</h3>
+      ${renderLangToggle(lang)}
+      <p>${isId
+        ? 'Aplikasi web untuk membantu anak kos yang ingin berlibur bersama teman dengan membagi modal perjalanan secara adil.'
+        : 'A web app that helps boarding-house students who want to go on vacation with friends split their trip budget fairly.'}
+      </p>
+      <h4>${isId ? 'Yang tersedia' : 'What’s included'}</h4>
+      <ul>
+        <li>${isId ? 'Pembagian modal liburan otomatis agar setiap teman mendapatkan porsi yang jelas.' : 'Automatic vacation cost splitting so each friend gets a clear, fair share.'}</li>
+        <li>${isId ? 'Pencatatan pengeluaran kelompok untuk memantau total biaya selama perjalanan.' : 'Group expense tracking to monitor total spending throughout the trip.'}</li>
+        <li>${isId ? 'Akses versi live untuk mencoba alur perencanaan liburan bersama.' : 'Live access to try the shared trip-planning flow directly.'}</li>
+      </ul>
+      <p><a href="https://split-kos.vercel.app/" target="_blank" rel="noopener">${isId ? 'Buka Website' : 'Open Website'}</a></p>
+    `;
+
     return `${renderLangToggle(lang)}<p>${isId ? 'Detail belum tersedia.' : 'Details not available.'}</p>`;
   }
 
