@@ -66,13 +66,26 @@ document.addEventListener('DOMContentLoaded',()=>{
     })();
   }
   const header = document.querySelector('.site-header');
+  let lastScrollY = window.pageYOffset;
   
   window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 50) {
+    const currentScrollY = window.pageYOffset;
+    
+    // Add scrolled class for padding/shadow transition
+    if (currentScrollY > 50) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
+
+    // Hide on scroll down, show on scroll up
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      header.classList.add('hide');
+    } else {
+      header.classList.remove('hide');
+    }
+    
+    lastScrollY = currentScrollY;
   });
 
   // nav toggle
