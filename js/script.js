@@ -317,6 +317,26 @@ document.addEventListener('DOMContentLoaded',()=>{
       <p><a href="https://split-kos.vercel.app/" target="_blank" rel="noopener">${isId ? 'Buka Website' : 'Open Website'}</a></p>
     `;
 
+    if(id==='modal6') return `
+      <h3>Nero</h3>
+      ${renderLangToggle(lang)}
+      <p>${isId
+        ? 'Aplikasi todolist kolaboratif untuk mengatur task project bersama Berkah Aryo Bima Sakti dan Aiman Gandra.'
+        : 'A collaborative todolist app for managing project tasks with Berkah Aryo Bima Sakti and Aiman Gandra.'}
+      </p>
+      <h4>${isId ? 'Yang tersedia' : 'What’s included'}</h4>
+      <ul>
+        <li>${isId ? 'Rancangan UI untuk pengelolaan tugas tim secara lebih terstruktur.' : 'UI design focused on structured team task management.'}</li>
+        <li>${isId ? 'Prototype interaktif di Figma untuk meninjau alur penggunaan.' : 'Interactive Figma prototype to review the user flow.'}</li>
+        <li>${isId ? 'Cocok sebagai referensi untuk pengembangan aplikasi todolist tim.' : 'Useful as a reference for building a team-based todolist app.'}</li>
+      </ul>
+      <p>
+        <a href="https://www.figma.com/design/shqAkYRecwEpV1rUjv9TuU/TEAM-KASIH-KITA-JUARA-BANG---APLIKASI-NERO?node-id=68-432&t=S36iPnPd2GNK1WnV-1" target="_blank" rel="noopener">${isId ? 'Buka Figma Design' : 'Open Figma Design'}</a>
+        &nbsp;•&nbsp;
+        <a href="https://www.figma.com/proto/shqAkYRecwEpV1rUjv9TuU/TEAM-KASIH-KITA-JUARA-BANG---APLIKASI-NERO?node-id=326-2550&p=f&viewport=179%2C172%2C0.16&t=XWvjWKuXp1nVR54E-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=326%3A1813&page-id=68%3A432" target="_blank" rel="noopener">${isId ? 'Buka Prototype' : 'Open Prototype'}</a>
+      </p>
+    `;
+
     return `${renderLangToggle(lang)}<p>${isId ? 'Detail belum tersedia.' : 'Details not available.'}</p>`;
   }
 
