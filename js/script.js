@@ -161,55 +161,95 @@ document.addEventListener('DOMContentLoaded',()=>{
     if (cursorEl) cursorEl.style.visibility = 'visible';
   }
 
-  // animate skill bars when visible
-  const bars = document.querySelectorAll('.bar');
-  const obs = new IntersectionObserver((entries)=>{
-    entries.forEach(en=>{
-      if(en.isIntersecting){
-        const b = en.target; const lvl = b.dataset.level||80;
-        b.querySelector('span').style.width = lvl + '%';
-        obs.unobserve(b);
-      }
-    });
-  },{threshold:0.25});
-  bars.forEach(b=>obs.observe(b));
+  // Skill bars have been replaced with a CSS-based hover liquid fill effect.
 
-  // Projects filtering
+  // 3D Carousel & Filtering Logic
   const filters = document.querySelectorAll('.filter');
-  const projectsGrid = document.getElementById('projectsGrid');
-  filters.forEach(btn=>btn.addEventListener('click',()=>{
-    filters.forEach(x=>x.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.dataset.filter;
-    document.querySelectorAll('.project').forEach(p=>{
-      p.style.display = (f==='all' || p.dataset.type===f)?'block':'none';
-    });
-    // reset scroll when changing filters
-    if(projectsGrid) projectsGrid.scrollLeft = 0;
-    setTimeout(()=>updateCarouselButtons && updateCarouselButtons(),120);
-  }));
-
-  // Carousel navigation (horizontal slider behavior)
+  const allProjects = Array.from(document.querySelectorAll('.project'));
   const carouselPrev = document.querySelector('.carousel-btn.prev');
   const carouselNext = document.querySelector('.carousel-btn.next');
-  const projectsTrack = document.getElementById('projectsGrid');
+  let visibleProjects = [...allProjects];
+  let currentIndex = Math.floor(visibleProjects.length / 2);
 
-  function updateCarouselButtons(){
-    if(!projectsTrack) return;
-    const maxScroll = projectsTrack.scrollWidth - projectsTrack.clientWidth;
-    if(carouselPrev) carouselPrev.disabled = projectsTrack.scrollLeft <= 5;
-    if(carouselNext) carouselNext.disabled = projectsTrack.scrollLeft >= maxScroll - 5;
+  function update3DCarousel() {
+    allProjects.forEach(p => {
+      p.className = 'project'; // reset all state classes
+      if (!visibleProjects.includes(p)) {
+        p.style.display = 'none';
+      } else {
+        p.style.display = 'block';
+      }
+    });
+
+    if (visibleProjects.length === 0) return;
+
+    visibleProjects.forEach((p, index) => {
+      if (index === currentIndex) {
+        p.classList.add('card-active');
+      } else if (index === currentIndex - 1) {
+        p.classList.add('card-prev');
+      } else if (index === currentIndex + 1) {
+        p.classList.add('card-next');
+      } else if (index < currentIndex - 1) {
+        p.classList.add('card-hidden-prev');
+      } else if (index > currentIndex + 1) {
+        p.classList.add('card-hidden-next');
+      }
+    });
+
+    // Update buttons
+    if (carouselPrev) {
+      carouselPrev.disabled = currentIndex <= 0;
+      carouselPrev.style.opacity = currentIndex <= 0 ? 0.3 : 1;
+      carouselPrev.style.cursor = currentIndex <= 0 ? 'default' : 'pointer';
+    }
+    if (carouselNext) {
+      carouselNext.disabled = currentIndex >= visibleProjects.length - 1;
+      carouselNext.style.opacity = currentIndex >= visibleProjects.length - 1 ? 0.3 : 1;
+      carouselNext.style.cursor = currentIndex >= visibleProjects.length - 1 ? 'default' : 'pointer';
+    }
   }
 
-  if(carouselPrev && carouselNext && projectsTrack){
-    carouselPrev.addEventListener('click', ()=> { projectsTrack.scrollBy({left: -projectsTrack.clientWidth * 0.8, behavior:'smooth'}); setTimeout(updateCarouselButtons,350); });
-    carouselNext.addEventListener('click', ()=> { projectsTrack.scrollBy({left: projectsTrack.clientWidth * 0.8, behavior:'smooth'}); setTimeout(updateCarouselButtons,350); });
-    projectsTrack.addEventListener('scroll', updateCarouselButtons);
-    window.addEventListener('resize', updateCarouselButtons);
-    updateCarouselButtons();
-    // keyboard navigation while focused
-    projectsTrack.addEventListener('keydown', (e)=>{ if(e.key==='ArrowLeft'){ projectsTrack.scrollBy({left:-projectsTrack.clientWidth*0.8,behavior:'smooth'}); } if(e.key==='ArrowRight'){ projectsTrack.scrollBy({left:projectsTrack.clientWidth*0.8,behavior:'smooth'}); } });
+  filters.forEach(btn => btn.addEventListener('click', () => {
+    filters.forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    
+    visibleProjects = allProjects.filter(p => f === 'all' || p.dataset.type === f);
+    currentIndex = Math.floor(visibleProjects.length / 2); // Center active card
+    update3DCarousel();
+  }));
+
+  if(carouselPrev && carouselNext) {
+    carouselPrev.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        update3DCarousel();
+      }
+    });
+    carouselNext.addEventListener('click', () => {
+      if (currentIndex < visibleProjects.length - 1) {
+        currentIndex++;
+        update3DCarousel();
+      }
+    });
   }
+
+  // Click side cards to navigate
+  allProjects.forEach(p => {
+    p.addEventListener('click', (e) => {
+      if (p.classList.contains('card-prev')) {
+        if (currentIndex > 0) currentIndex--;
+        update3DCarousel();
+      } else if (p.classList.contains('card-next')) {
+        if (currentIndex < visibleProjects.length - 1) currentIndex++;
+        update3DCarousel();
+      }
+    });
+  });
+
+  // Init
+  update3DCarousel();
 
   // Modal for project details
   const modal = document.getElementById('modal');
