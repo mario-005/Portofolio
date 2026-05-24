@@ -581,6 +581,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         btn.textContent = 'Submitted!';
       } catch (err) {
         console.error('Error submitting testimonial:', err);
+        alert('Gagal mengirim testimoni: ' + (err.message || JSON.stringify(err)));
         btn.textContent = 'Error!';
       }
 
