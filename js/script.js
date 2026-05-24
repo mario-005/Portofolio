@@ -498,10 +498,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   async function renderTestimonials() {
     if (!testiGrid || !supabaseClient) return;
     try {
+      // Fetch without order to avoid error if created_at column doesn't exist
       const { data, error } = await supabaseClient
         .from('testimonials')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
 
       if (error) throw error;
 
@@ -510,7 +510,10 @@ document.addEventListener('DOMContentLoaded',()=>{
         return;
       }
 
-      testiGrid.innerHTML = data.map(t => `
+      // Reverse the array so the newest is on top
+      const reversedData = [...data].reverse();
+
+      testiGrid.innerHTML = reversedData.map(t => `
         <div class="testi-card reveal">
           <div class="testi-quote">"${t.message}"</div>
           <div class="testi-author">
@@ -524,6 +527,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       `).join('');
     } catch (err) {
       console.error('Error fetching testimonials:', err);
+      alert('Gagal memuat data: ' + (err.message || JSON.stringify(err)));
       testiGrid.innerHTML = '<div class="testi-empty">Failed to load testimonials.</div>';
     }
   }
