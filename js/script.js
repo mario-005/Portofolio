@@ -445,52 +445,95 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   });
 
-  // contact form (client-only demo)
+  // contact form (Web3Forms)
   const form = document.getElementById('contactForm');
-  form.addEventListener('submit',async(e)=>{
-    e.preventDefault();
-    const name = document.getElementById('cname').value.trim();
-    const mail = document.getElementById('cemail').value.trim();
-    const msg = document.getElementById('cmessage').value.trim();
-    if(!name||!mail||!msg) return alert('Please complete the form');
-    // show a fake sending flow
-    const btn = document.getElementById('sendMsg');
-    btn.disabled = true; btn.textContent = 'Sending...';
-    await new Promise(r=>setTimeout(r,900));
-    btn.textContent = 'Sent'; setTimeout(()=>{btn.disabled=false;btn.textContent='Send';form.reset()},900);
-  });
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('cname').value.trim();
+      const mail = document.getElementById('cemail').value.trim();
+      const msg = document.getElementById('cmessage').value.trim();
+      if(!name||!mail||!msg) return alert('Please complete the form');
+      
+      const btn = document.getElementById('sendMsg');
+      btn.disabled = true; 
+      btn.textContent = 'Sending...';
 
-  // Testimonials Logic (LocalStorage)
+      try {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            access_key: '42dc0ed0-2a5c-4b25-9b53-c9c58fa19cc6',
+            subject: 'New Contact Message from Portfolio',
+            from_name: name,
+            email: mail,
+            message: msg
+          })
+        });
+        btn.textContent = 'Sent!'; 
+        form.reset();
+      } catch (err) {
+        btn.textContent = 'Error!';
+      }
+      setTimeout(() => {
+        btn.disabled=false;
+        btn.textContent='Send Message ↗';
+      }, 2000);
+    });
+  }
+
+  // Testimonials Logic (Supabase + Web3Forms)
   const testiForm = document.getElementById('testiForm');
   const testiGrid = document.getElementById('testimonialGrid');
-  const TESTI_KEY = 'portfolio_testimonials';
+  
+  // Supabase Configuration
+  const SUPABASE_URL = 'https://qslpfzeuwfronpfrtlxe.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_NLX4HpDTnZQOPdFnSKKHUw_2A4odco0';
+  let supabaseClient = null;
+  if (window.supabase) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
 
-  function renderTestimonials() {
-    if (!testiGrid) return;
-    const data = JSON.parse(localStorage.getItem(TESTI_KEY) || '[]');
-    if (data.length === 0) {
-      testiGrid.innerHTML = '<div class="testi-empty">No testimonials yet. Be the first to leave a review!</div>';
-      return;
-    }
+  async function renderTestimonials() {
+    if (!testiGrid || !supabaseClient) return;
+    try {
+      const { data, error } = await supabaseClient
+        .from('testimonials')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    testiGrid.innerHTML = data.map(t => `
-      <div class="testi-card reveal">
-        <div class="testi-quote">"${t.message}"</div>
-        <div class="testi-author">
-          <div class="testi-avatar">${t.avatar}</div>
-          <div class="testi-info">
-            <h4>${t.name}</h4>
-            <span>${t.role}</span>
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        testiGrid.innerHTML = '<div class="testi-empty">No testimonials yet. Be the first to leave a review!</div>';
+        return;
+      }
+
+      testiGrid.innerHTML = data.map(t => `
+        <div class="testi-card reveal">
+          <div class="testi-quote">"${t.message}"</div>
+          <div class="testi-author">
+            <div class="testi-avatar">${t.avatar}</div>
+            <div class="testi-info">
+              <h4>${t.name}</h4>
+              <span>${t.role}</span>
+            </div>
           </div>
         </div>
-      </div>
-    `).join('');
+      `).join('');
+    } catch (err) {
+      console.error('Error fetching testimonials:', err);
+      testiGrid.innerHTML = '<div class="testi-empty">Failed to load testimonials.</div>';
+    }
   }
 
   if (testiForm) {
     renderTestimonials();
     testiForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!supabaseClient) return;
+
       const name = document.getElementById('tname').value.trim();
       const role = document.getElementById('trole').value.trim();
       const msg = document.getElementById('tmessage').value.trim();
@@ -501,29 +544,50 @@ document.addEventListener('DOMContentLoaded',()=>{
       btn.disabled = true;
       btn.textContent = 'Submitting...';
 
-      // Fake network delay for UX
-      await new Promise(r => setTimeout(r, 600));
+      try {
+        const newTesti = {
+          name,
+          role,
+          message: msg,
+          avatar: name.charAt(0).toUpperCase()
+        };
 
-      const newTesti = {
-        name,
-        role,
-        message: msg,
-        avatar: name.charAt(0).toUpperCase()
-      };
+        // Save to Supabase
+        const { error } = await supabaseClient
+          .from('testimonials')
+          .insert([newTesti]);
 
-      const data = JSON.parse(localStorage.getItem(TESTI_KEY) || '[]');
-      // Add to beginning of array so newest shows first
-      data.unshift(newTesti);
-      localStorage.setItem(TESTI_KEY, JSON.stringify(data));
+        if (error) throw error;
 
-      renderTestimonials();
-      testiForm.reset();
+        // Send Email via Web3Forms
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            access_key: '42dc0ed0-2a5c-4b25-9b53-c9c58fa19cc6',
+            subject: 'New Testimonial for Portfolio',
+            name: name,
+            role: role,
+            message: msg
+          })
+        });
 
-      btn.textContent = 'Submitted!';
+        await renderTestimonials();
+        testiForm.reset();
+
+        btn.textContent = 'Submitted!';
+      } catch (err) {
+        console.error('Error submitting testimonial:', err);
+        btn.textContent = 'Error!';
+      }
+
       setTimeout(() => {
         btn.disabled = false;
         btn.textContent = 'Submit Testimonial ↗';
-      }, 1500);
+      }, 2000);
     });
   }
 
