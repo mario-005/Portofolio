@@ -460,6 +460,73 @@ document.addEventListener('DOMContentLoaded',()=>{
     btn.textContent = 'Sent'; setTimeout(()=>{btn.disabled=false;btn.textContent='Send';form.reset()},900);
   });
 
+  // Testimonials Logic (LocalStorage)
+  const testiForm = document.getElementById('testiForm');
+  const testiGrid = document.getElementById('testimonialGrid');
+  const TESTI_KEY = 'portfolio_testimonials';
+
+  function renderTestimonials() {
+    if (!testiGrid) return;
+    const data = JSON.parse(localStorage.getItem(TESTI_KEY) || '[]');
+    if (data.length === 0) {
+      testiGrid.innerHTML = '<div class="testi-empty">No testimonials yet. Be the first to leave a review!</div>';
+      return;
+    }
+
+    testiGrid.innerHTML = data.map(t => `
+      <div class="testi-card reveal">
+        <div class="testi-quote">"${t.message}"</div>
+        <div class="testi-author">
+          <div class="testi-avatar">${t.avatar}</div>
+          <div class="testi-info">
+            <h4>${t.name}</h4>
+            <span>${t.role}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  if (testiForm) {
+    renderTestimonials();
+    testiForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('tname').value.trim();
+      const role = document.getElementById('trole').value.trim();
+      const msg = document.getElementById('tmessage').value.trim();
+      
+      if (!name || !role || !msg) return;
+
+      const btn = testiForm.querySelector('.submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      // Fake network delay for UX
+      await new Promise(r => setTimeout(r, 600));
+
+      const newTesti = {
+        name,
+        role,
+        message: msg,
+        avatar: name.charAt(0).toUpperCase()
+      };
+
+      const data = JSON.parse(localStorage.getItem(TESTI_KEY) || '[]');
+      // Add to beginning of array so newest shows first
+      data.unshift(newTesti);
+      localStorage.setItem(TESTI_KEY, JSON.stringify(data));
+
+      renderTestimonials();
+      testiForm.reset();
+
+      btn.textContent = 'Submitted!';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'Submit Testimonial ↗';
+      }, 1500);
+    });
+  }
+
   // resume download placeholder
   const resumeBtn = document.getElementById('downloadResume');
   resumeBtn.addEventListener('click',()=>{

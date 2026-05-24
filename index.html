@@ -384,41 +384,31 @@
       <section id="testimonials" class="panel panel-alt">
         <div class="container">
           <h2>Testimonials</h2>
-          <div class="testimonial-grid">
-            
-            <div class="testi-card reveal">
-              <div class="testi-quote">"Mario was an exceptional addition to our team. His UI/UX designs transformed our product's user experience into something truly premium."</div>
-              <div class="testi-author">
-                <div class="testi-avatar">R</div>
-                <div class="testi-info">
-                  <h4>Reza</h4>
-                  <span>Project Manager, Galaxy Medical</span>
+          
+          <div class="testi-form-wrapper reveal">
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom: 2rem;">Leave a review or feedback about my work.</p>
+            <form id="testiForm" class="contact-form-modern" onsubmit="return false;">
+              <div class="form-row-modern">
+                <div class="form-group-modern">
+                  <input id="tname" type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group-modern">
+                  <input id="trole" type="text" placeholder="Your Role / Company" required>
                 </div>
               </div>
-            </div>
-
-            <div class="testi-card reveal">
-              <div class="testi-quote">"A highly dedicated and skilled web developer. He consistently delivered high-quality code and collaborated seamlessly with the back-end team."</div>
-              <div class="testi-author">
-                <div class="testi-avatar">A</div>
-                <div class="testi-info">
-                  <h4>Aiman Gandra</h4>
-                  <span>Co-Founder, SplitKos</span>
-                </div>
+              <div class="form-group-modern">
+                <textarea id="tmessage" rows="3" placeholder="Write your testimonial here..." required></textarea>
               </div>
-            </div>
-
-            <div class="testi-card reveal">
-              <div class="testi-quote">"Great attention to detail and modern aesthetics. Mario understands how to turn complex requirements into intuitive, minimalist interfaces."</div>
-              <div class="testi-author">
-                <div class="testi-avatar">B</div>
-                <div class="testi-info">
-                  <h4>Berkah Aryo</h4>
-                  <span>Team Lead, Nero App</span>
-                </div>
+              <div class="form-actions-modern">
+                <button type="submit" class="btn-bazil btn-bazil-solid submit-btn">
+                  Submit Testimonial ↗
+                </button>
               </div>
-            </div>
+            </form>
+          </div>
 
+          <div id="testimonialGrid" class="testimonial-grid">
+            <!-- Testimonials will be injected here via JavaScript -->
           </div>
         </div>
       </section>

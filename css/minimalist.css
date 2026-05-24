@@ -2538,3 +2538,21 @@ h2,
   font-size: 0.85rem;
   color: var(--text-muted);
 }
+
+.testi-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 3rem 0;
+  width: 100%;
+}
+
+.testi-form-wrapper {
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+  background: var(--bg-primary);
+  border: 1px solid var(--line-color);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-subtle);
+}
